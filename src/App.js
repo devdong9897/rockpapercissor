@@ -15,24 +15,63 @@ const choice = {
     img: "https://image.auction.co.kr/itemimage/28/65/8e/28658ea5e6.jpg",
   },
   scissors: {
-    name: "scissors",
+    name: "Scissors",
     img: "https://img.danawa.com/prod_img/500000/261/156/img/5156261_1.jpg?_v=20171116155341",
   },
   paper: {
-    name: "paper",
+    name: "Paper",
     img: "https://cafe24img.poxo.com/kangkd78910/web/product/big/20191118/383d851c932528f52e9aa585c46d8331.jpg",
   },
 };
 function App() {
+  // you 스테이트
   const [userSelect, setUserSelect] = useState(null);
+  // 컴퓨터 스테이트
+  const [computerSelect, setComputerSelect] = useState(null);
+  // 승패 스테이트
+  const [result, setResult] = useState("");
+
   const play = (userChoice) => {
     setUserSelect(choice[userChoice]);
+    // 유저가 아이템을 선택할 때 랜덤한 값을 선택하므로 선택하는 play부분에 코드작성
+    let computerChoice = randomChoice();
+    setComputerSelect(computerChoice);
+    setResult(judgment(choice[userChoice], computerChoice));
+  };
+
+  const judgment = (user, computer) => {
+    console.log("user", user, "computer", computer);
+
+    // user == computer tie
+    // user == rock, computer == "scissors" user 이긴거지
+    // user == "rock" computer == paper   user 진거지
+    // user == scissors computer paper    user 이긴거지
+    // user == scissors computer rock     user 진거지
+    // user == paper computer rock   user 이긴거지
+    // user paper computer scissors user 진거지
+
+    if (user.name === computer.name) {
+      return "tie";
+    } else if (user.name === "Rock")
+      return computer.name === "Scissors" ? "win" : "lose";
+    else if (user.name === "Scissors")
+      return computer.name === "Paper" ? "win" : "lose";
+    else if (user.name === "Paper")
+      return computer.name === "Rock" ? "win" : "lose";
+  };
+
+  const randomChoice = () => {
+    let itemArray = Object.keys(choice); // 객체에 키값만 뽑아서 배열로 만들어주는 함수.
+    console.log(itemArray);
+    let randomItem = Math.floor(Math.random() * itemArray.length);
+    let final = itemArray[randomItem];
+    return choice[final];
   };
   return (
     <>
       <div className="main">
-        <Box title="you" item={userSelect} />
-        <Box title="computer" />
+        <Box title="you" item={userSelect} result={result} />
+        <Box title="computer" item={computerSelect} result={result} />
       </div>
       <div className="main">
         <button onClick={() => play("scissors")}>가위</button>
